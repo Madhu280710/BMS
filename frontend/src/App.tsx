@@ -1,26 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter } from 'react-router-dom';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from '@emotion/react';
+import store from './redux/store';
+import keycloak from './keycloak';
+import AppRoutes from './routes/AppRoutes';
+import Header from './components/Layout/Header';
+import Footer from './components/Layout/Footer';
+import theme from './themes/theme';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App: React.FC = () =>
+<Provider store={store}>
+  <ReactKeycloakProvider authClient={keycloak}>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Header />
+        <AppRoutes />
+        <Footer />
+      </BrowserRouter>
+    </ThemeProvider>
+  </ReactKeycloakProvider>
+</Provider>
 
 export default App;

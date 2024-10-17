@@ -1,19 +1,21 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import  store  from './redux/store';
+import keycloak from './keycloak';  // Import Keycloak instance
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
+  if (authenticated) {
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.getElementById('root')
+    );
+  } else {
+    console.warn('User is not authenticated');
+  }
+}).catch((error) => {
+  console.error('Failed to initialize Keycloak', error);
+});
